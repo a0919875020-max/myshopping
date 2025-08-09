@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }} - 商品介紹</title>
+    <style>
+    body { font-family: Arial; background: #111; color: #fff; margin: 0; overflow-x: hidden; }
+    .container { max-width: 800px; margin: 40px auto; background: #222; color: #fff; padding: 30px; border-radius: 8px; box-sizing: border-box; box-shadow: 0 2px 8px #111; }
+    .product-title { font-size: 2em; color: #fff; margin-bottom: 20px; }
+        .product-images { display: flex; gap: 18px; margin-bottom: 20px; }
+    .product-images img { width: 220px; height: 220px; object-fit: cover; border-radius: 8px; background: #333; }
+    .product-price { color: #ff7675; font-size: 1.4em; margin-bottom: 12px; }
+    .product-desc { color: #bbb; font-size: 1.1em; margin-bottom: 20px; }
+        .back-link { color: #2196F3; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <!-- 主導覽列 -->
+    <nav class="navbar">
+    <div class="nav-logo"><a href="{{ url_for('index') }}">牧咣</a></div>
+        <div class="nav-links nav-center">
+            <a href="{{ url_for('index') }}">首頁</a>
+            <a href="{{ url_for('category_page', category='水晶') }}">水晶</a>
+            <a href="{{ url_for('category_page', category='銀飾') }}">銀飾</a>
+            <a href="{{ url_for('category_page', category='戒指') }}">戒指</a>
+            <a href="{{ url_for('category_page', category='耳環') }}">耳環</a>
+        </div>
+    </nav>
+    <style>
+        .navbar { width:100%; background:#fff; box-shadow:0 2px 8px #eee; display:flex; align-items:center; justify-content:space-between; padding:0 32px; height:60px; position:sticky; top:0; z-index:100; }
+    .nav-logo a { font-size:1.5em; font-weight:bold; color:#bbb; text-decoration:none; letter-spacing:2px; }
+        .nav-links { display:flex; gap:24px; }
+        .nav-links a { color:#333; text-decoration:none; font-size:1.1em; transition:color 0.2s; }
+        .nav-links a:hover { color:#4CAF50; }
+        .nav-center { flex:1; justify-content:center; display:flex; gap:24px; }
+        .container { max-width:800px; margin:40px auto; background:#fff; padding:30px; border-radius:8px; box-shadow:0 2px 8px #ccc; }
+        .product-title { font-size:2em; color:#333; margin-bottom:20px; }
+        .product-images { display:flex; gap:18px; margin-bottom:20px; flex-wrap:wrap; }
+        .product-images img { width:220px; height:220px; object-fit:cover; border-radius:8px; background:#eee; cursor:zoom-in; }
+        .product-price { color:#e53935; font-size:1.4em; margin-bottom:12px; }
+        .product-desc { color:#555; font-size:1.1em; margin-bottom:20px; }
+        .back-link { color:#2196F3; text-decoration:none; }
+        @media (max-width:900px) {
+            .container{padding:12px 4px;}
+            .product-images img{width:120px; height:120px;}
+            .nav-links, .nav-center{gap:10px;}
+        }
+        @media (max-width:600px) {
+            .navbar{padding:0 8px; height:48px;}
+            .nav-logo a{font-size:1.1em;}
+            .nav-links a{font-size:0.95em;}
+            .container{padding:6px 2px;}
+            .product-title{font-size:1.2em;}
+            .product-images img{width:60vw; height:60vw;}
+            .nav-links, .nav-center{gap:4px;}
+        }
+    </style>
+    <div class="container">
+        <div class="product-detail-flex">
+            <div class="product-images-side">
+                <div class="thumb-list-vertical">
+                    {% for img in product.images %}
+                        <img src="{{ url_for('static', filename=img.replace('static/', '')) }}" alt="{{ product.name }}" class="thumb-img" onclick="changeMainImg(this)">
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="main-img-side">
+                <img id="mainImg" src="{{ url_for('static', filename=product.images[0].replace('static/', '')) }}" alt="{{ product.name }}" class="main-img" onclick="showLarge(this.src)" style="cursor:zoom-in;">
+            </div>
+            <div class="product-info">
+                <div class="product-title">{{ product.name }}</div>
+                <div class="product-price">價格：${{ product.price }}</div>
+                <div class="product-desc">{{ product.description }}</div>
+                <a href="{{ url_for('index') }}" class="back-link">← 回首頁</a>
+            </div>
+        </div>
+        <!-- 放大圖片彈窗 -->
+        <div id="largeImgModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+            <img id="largeImg" src="" style="max-width:90vw;max-height:90vh;border-radius:12px;box-shadow:0 2px 16px #222;">
+        </div>
+    </div>
+    <style>
+        .product-detail-flex {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .product-images-side {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 60px;
+        }
+        .thumb-list-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .thumb-img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #eee;
+            box-shadow: 0 1px 4px #ccc;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border 0.2s;
+        }
+        .thumb-img.active, .thumb-img:hover {
+            border: 2px solid #4CAF50;
+        }
+        .main-img-side {
+            display: flex;
+            align-items: center;
+            min-width: 220px;
+        }
+        .main-img {
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #eee;
+            box-shadow: 0 2px 8px #ccc;
+            margin-bottom: 12px;
+            transition: opacity 0.3s;
+            opacity: 1;
+        }
+        .main-img.fade {
+            opacity: 0.3;
+        }
+        .product-info {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 18px;
+        }
+        .product-title {
+            font-size: 2em;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .product-price {
+            color: #e53935;
+            font-size: 1.4em;
+            margin-bottom: 12px;
+        }
+        .product-desc {
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            color: #2196F3;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        @media (max-width:900px) {
+            .product-detail-flex { gap: 16px; }
+            .main-img { width: 140px; height: 140px; }
+            .thumb-img { width: 36px; height: 36px; }
+        }
+        @media (max-width:600px) {
+            .product-detail-flex { flex-direction: column; align-items: center; gap: 10px; }
+            .main-img { width: 80vw; height: 80vw; max-width: 220px; max-height: 220px; }
+            .thumb-list-vertical { flex-direction: row; gap: 8px; align-items: center; }
+            .thumb-img { width: 32px; height: 32px; }
+            .product-info { min-width: 0; }
+            .product-title { font-size: 1.2em; }
+        }
+    </style>
+    <script>
+        function changeMainImg(imgElem) {
+            var mainImg = document.getElementById('mainImg');
+            mainImg.classList.add('fade');
+            setTimeout(function(){
+                mainImg.src = imgElem.src;
+                mainImg.classList.remove('fade');
+            }, 150);
+            document.querySelectorAll('.thumb-img').forEach(function(img){img.classList.remove('active');});
+            imgElem.classList.add('active');
+        }
+        function showLarge(src) {
+            document.getElementById('largeImg').src = src;
+            document.getElementById('largeImgModal').style.display = 'flex';
+        }
+        document.getElementById('largeImgModal').onclick = function() {
+            this.style.display = 'none';
+        }
+        window.onload = function(){
+            var thumbs = document.querySelectorAll('.thumb-img');
+            if(thumbs.length>0){thumbs[0].classList.add('active');}
+        }
+    </script>
+    <a id="igBtn" href="https://www.instagram.com/moolight_studio?igsh=Y3Yzb3hsN2Rnczk2" target="_blank" title="Instagram">
+        <img src="https://cdn-icons-png.flaticon.com/512/87/87390.png" alt="IG" style="width:40px;height:40px;filter: grayscale(100%);">
+    </a>
+    <style>
+        #igBtn {
+            position: fixed;
+            right: 18px;
+            bottom: 80px;
+            z-index: 9999;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px #aaa;
+            padding: 4px;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        #igBtn:hover { opacity: 1; }
+        @media (max-width:600px) {
+            #igBtn { right: 10px; bottom: 56px; width:32px; height:32px; }
+            #igBtn img { width:32px; height:32px; }
+        }
+    </style>
+    <footer style="width:100%;text-align:center;margin:32px 0 0 0;font-size:1em;color:#888;line-height:1.7;">
+    2025 © moolight. ALL RIGHTS RESERVED.<br>
+    營業人名稱：牧盈工作室  /  統一編號：95247812
+    </footer>
+</body>
+</html>

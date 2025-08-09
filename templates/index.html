@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>購物網站首頁</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #111; color: #fff; margin: 0; overflow-x: hidden; }
+        .banner {
+            width: 100%; height: 260px; background: url('/static/images/banner.jpg') center/cover no-repeat;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .banner-title {
+            background: rgba(0,0,0,0.7); padding: 24px 48px; border-radius: 12px;
+            font-size: 2.5em; color: #fff; font-weight: bold; letter-spacing: 2px;
+        }
+    .container { max-width: 1200px; margin: 0 auto; padding: 30px 16px; box-sizing: border-box; background: #222; border-radius: 12px; }
+        .category-nav { display: flex; gap: 18px; margin-bottom: 32px; justify-content: center; }
+        .category-btn {
+            padding: 10px 28px; background: #222; border: 2px solid #fff; border-radius: 24px;
+            color: #fff; font-size: 1.1em; cursor: pointer; transition: all 0.2s;
+        }
+        .category-btn.active, .category-btn:hover { background: #fff; color: #111; }
+        .products { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; }
+        .product-card {
+            background: #222; border-radius: 12px; box-shadow: 0 2px 12px #111;
+            width: 260px; padding: 18px; text-align: center; transition: box-shadow 0.2s;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .product-card:hover { box-shadow: 0 4px 24px #333; }
+        .product-card img {
+            width: 200px; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;
+            background: #333;
+        }
+        .product-name { font-weight: bold; font-size: 1.15em; margin: 8px 0 4px 0; color: #fff; }
+        .product-price { color: #ff7675; font-size: 1.2em; margin-bottom: 8px; }
+        .product-desc { color: #bbb; font-size: 0.98em; margin-bottom: 10px; }
+        .admin-link { position: fixed; top: 20px; right: 30px; }
+        .admin-link a {
+            padding: 8px 16px; background: #2196F3; color: #fff; border-radius: 4px; text-decoration: none;
+            font-weight: bold; box-shadow: 0 2px 8px #bbb;
+        }
+        .navbar { width:100%; background:#fff; box-shadow:0 2px 8px #eee; display:flex; align-items:center; justify-content:space-between; padding:0 32px; height:60px; position:sticky; top:0; z-index:100; }
+    .nav-logo a { font-size:1.5em; font-weight:bold; color:#bbb; text-decoration:none; letter-spacing:2px; }
+        .nav-center { flex:1; display:flex; justify-content:center; }
+        .nav-links { display:flex; gap:24px; align-items:center; }
+        .nav-links a { color:#333; text-decoration:none; font-size:1.1em; transition:color 0.2s; }
+        .nav-links a:hover { color:#4CAF50; }
+        .member-btn {
+            padding: 8px 18px;
+            background: #222;
+            color: #fff;
+            border-radius: 24px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 2px 8px #bbb;
+            transition: background 0.2s, color 0.2s;
+            border: 1px solid #bbb;
+            margin-left: 18px;
+        }
+        .member-btn:hover {
+            background: #eee;
+            color: #222;
+            border: 1px solid #222;
+        }
+        @media (max-width: 900px) {
+            .products { gap: 18px; }
+            .product-card { width: 46vw; min-width: 180px; }
+            .product-card img { width: 140px; height: 140px; }
+        }
+        @media (max-width: 600px) {
+            .banner { height: 120px; }
+            .banner-title { font-size: 1.3em; padding: 10px 18px; }
+            .container { padding: 12px 4px; }
+            .category-nav { gap: 8px; }
+            .product-card { width: 90vw; }
+            .product-card img { width: 90vw; height: 90vw; max-width: 220px; max-height: 220px; }
+        }
+        #backToTop {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 9999;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: #fff;
+            font-size: 2em;
+            border: none;
+            box-shadow: 0 2px 8px #aaa;
+            cursor: pointer;
+            opacity: 0.8;
+            display: none;
+            transition: opacity 0.2s;
+        }
+        #backToTop:hover {
+            opacity: 1;
+            background: #388E3C;
+        }
+        @media (max-width:600px) {
+            #backToTop {
+                width: 38px;
+                height: 38px;
+                font-size: 1.4em;
+                right: 10px;
+                bottom: 10px;
+            }
+        }
+        #igBtn {
+            position: fixed;
+            right: 18px;
+            bottom: 80px;
+            z-index: 9999;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px #aaa;
+            padding: 4px;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        #igBtn:hover { opacity: 1; }
+        @media (max-width:600px) {
+            #igBtn { right: 10px; bottom: 56px; width:32px; height:32px; }
+            #igBtn img { width:32px; height:32px; }
+        }
+    </style>
+    <script>
+        function showCategory(cat) {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.cat === cat);
+            });
+            document.querySelectorAll('.products').forEach(list => {
+                list.style.display = (list.dataset.cat === cat) ? 'flex' : 'none';
+            });
+        }
+        window.onload = function() {
+            showCategory('水晶');
+        }
+        // 顯示/隱藏按鈕
+        window.addEventListener('scroll', function() {
+            document.getElementById('backToTop').style.display = (window.scrollY > 200) ? 'block' : 'none';
+        });
+        // 點擊回到最上方
+        document.getElementById('backToTop').onclick = function() {
+            window.scrollTo({top:0, behavior:'smooth'});
+        };
+    </script>
+</head>
+<body>
+    <!-- 主導覽列 -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" style="height:40px;vertical-align:middle;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextSibling.style.display='inline';">
+                <span style="display:none;vertical-align:middle;">牧咣</span>
+            </a>
+        </div>
+        <div class="nav-center">
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}">首頁</a>
+                                <div class="dropdown" style="display:inline-block;position:relative;">
+                                    <a href="{{ url_for('category_page', category='水晶') }}" class="dropdown-toggle" style="position:relative;">水晶</a>
+                                    <div class="dropdown-menu" style="display:none;position:absolute;left:0;top:100%;background:#222;padding:0;min-width:120px;z-index:1000;border-radius:0 0 8px 8px;box-shadow:0 2px 8px #111;">
+                                        <a href="#紫水晶網址" class="dropdown-item" style="display:block;padding:10px 18px;color:#fff;text-decoration:none;">紫水晶</a>
+                                        <a href="#月光石網址" class="dropdown-item" style="display:block;padding:10px 18px;color:#fff;text-decoration:none;">月光石</a>
+                                        <a href="#拉長石網址" class="dropdown-item" style="display:block;padding:10px 18px;color:#fff;text-decoration:none;">拉長石</a>
+                                    </div>
+                                </div>
+                <a href="{{ url_for('category_page', category='銀飾') }}">銀飾</a>
+                <a href="{{ url_for('category_page', category='戒指') }}">戒指</a>
+                <a href="{{ url_for('category_page', category='耳環') }}">耳環</a>
+                <a href="{{ url_for('login') }}">會員</a>
+                {# <a href="{{ url_for('admin_login') }}">管理員</a> #}
+            </div>
+                <style>
+                .dropdown:hover .dropdown-menu {
+                    display: block !important;
+                }
+                .dropdown-toggle::after {
+                    content: " ▼";
+                    font-size: 0.7em;
+                }
+                .dropdown-menu .dropdown-item:hover {
+                    background: #444;
+                }
+                </style>
+                </div>
+    </nav>
+    <div class="banner">
+        <div class="banner-title" style="display: flex; align-items: center; gap: 16px; justify-content: center;">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" style="height:150px;vertical-align:middle;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextSibling.style.display='inline';">
+            <span style="font-size:1em;vertical-align:middle;">牧咣moolight飾品</span>
+        </div>
+    </div>
+    <div class="container">
+        <div class="category-nav">
+            <div style="display:inline-block;position:relative;">
+                <button class="category-btn" data-cat="水晶" onclick="showCategory('水晶')">水晶</button>
+                <div style="display:inline-block;vertical-align:top;">
+                    <button class="category-btn" data-cat="紫水晶" onclick="showCategory('紫水晶')" style="margin-left:4px;">紫水晶</button>
+                    <button class="category-btn" data-cat="月光石" onclick="showCategory('月光石')" style="margin-left:4px;">月光石</button>
+                    <button class="category-btn" data-cat="拉長石" onclick="showCategory('拉長石')" style="margin-left:4px;">拉長石</button>
+                </div>
+            </div>
+            <button class="category-btn" data-cat="銀飾" onclick="showCategory('銀飾')">銀飾</button>
+            <button class="category-btn" data-cat="戒指" onclick="showCategory('戒指')">戒指</button>
+            <button class="category-btn" data-cat="耳環" onclick="showCategory('耳環')">耳環</button>
+        </div>
+        {% for category in ['水晶', '銀飾', '戒指', '耳環'] %}
+            <div class="products" data-cat="{{ category }}" style="display:none;">
+                {% for idx, product in enumerate(products) %}
+                    {% if product.category == category %}
+                        <div class="product-card">
+                            <a href="{{ url_for('product', product_id=idx) }}">
+                                <img src="{{ url_for('static', filename=product.images[0].replace('static/', '')) }}" alt="{{ product.name }}">
+                            </a>
+                            <div class="product-name">{{ product.name }}</div>
+                            <div class="product-price">${{ product.price }}</div>
+                            <div class="product-desc">{{ product.description }}</div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <!-- 回到最上方按鈕 -->
+    <button id="backToTop" title="回到最上面">↑</button>
+    <a id="igBtn" href="https://www.instagram.com/moolight_studio?igsh=Y3Yzb3hsN2Rnczk2" target="_blank" title="Instagram">
+        <img src="https://cdn-icons-png.flaticon.com/512/87/87390.png" alt="IG" style="width:40px;height:40px;filter: grayscale(100%);">
+    </a>
+    <footer style="width:100%;text-align:center;margin:32px 0 0 0;font-size:1em;color:#888;line-height:1.7;">
+    2025 © moolight. ALL RIGHTS RESERVED.<br>
+    營業人名稱：牧盈工作室  /  統一編號：95247812
+    </footer>
+</body>
+</html>

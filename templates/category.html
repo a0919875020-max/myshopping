@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category }}商品列表</title>
+    <nav class="navbar">
+    <div class="nav-logo"><a href="{{ url_for('index') }}">牧咣</a></div>
+        <div class="nav-links nav-center">
+            <a href="{{ url_for('index') }}">首頁</a>
+            <a href="{{ url_for('category_page', category='水晶') }}">水晶</a>
+            <a href="{{ url_for('category_page', category='銀飾') }}">銀飾</a>
+            <a href="{{ url_for('category_page', category='戒指') }}">戒指</a>
+            <a href="{{ url_for('category_page', category='耳環') }}">耳環</a>
+        </div>
+    </nav>
+    <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #111; color: #fff; margin: 0; overflow-x: hidden; }
+    .navbar { width:100%; background:#222; box-shadow:0 2px 8px #111; display:flex; align-items:center; justify-content:space-between; padding:0 32px; height:60px; position:sticky; top:0; z-index:100; }
+    .nav-logo a { font-size:1.5em; font-weight:bold; color:#fff; text-decoration:none; letter-spacing:2px; }
+    .nav-links { display:flex; gap:24px; }
+    .nav-links a { color:#fff; text-decoration:none; font-size:1.1em; transition:color 0.2s; }
+    .nav-links a:hover { color:#ff7675; }
+        .nav-center { flex:1; justify-content:center; display:flex; gap:24px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 30px 16px; box-sizing: border-box; background: #222; border-radius: 12px; }
+    .category-title { font-size:2em; color:#fff; margin-bottom:24px; text-align:center; }
+        .products { display:flex; flex-wrap:wrap; gap:32px; justify-content:center; }
+    .product-card { background:#222; border-radius:12px; box-shadow:0 2px 12px #111; width:260px; padding:18px; text-align:center; transition:box-shadow 0.2s; display:flex; flex-direction:column; align-items:center; }
+    .product-card:hover { box-shadow:0 4px 24px #333; }
+    .product-card img { width:200px; height:200px; object-fit:cover; border-radius:8px; margin-bottom:12px; background:#333; }
+    .product-name { font-weight:bold; font-size:1.15em; margin:8px 0 4px 0; color:#fff; }
+    .product-price { color:#ff7675; font-size:1.2em; margin-bottom:8px; }
+    .product-desc { color:#bbb; font-size:0.98em; margin-bottom:10px; }
+        @media (max-width:900px) {
+            .container { padding:12px 4px; }
+            .products { gap:18px; }
+            .product-card { width:46vw; min-width:180px; }
+            .product-card img { width:140px; height:140px; }
+        }
+        @media (max-width:600px) {
+            .navbar{padding:0 8px; height:48px;}
+            .nav-logo a{font-size:1.1em;}
+            .nav-links a{font-size:0.95em;}
+            .container{padding:6px 2px;}
+            .product-card{width:90vw;}
+            .product-card img{width:90vw; height:90vw; max-width:220px; max-height:220px;}
+        }
+        #backToTop {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 9999;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: #fff;
+            font-size: 2em;
+            border: none;
+            box-shadow: 0 2px 8px #aaa;
+            cursor: pointer;
+            opacity: 0.8;
+            display: none;
+            transition: opacity 0.2s;
+        }
+        #backToTop:hover {
+            opacity: 1;
+            background: #388E3C;
+        }
+        @media (max-width:600px) {
+            #backToTop {
+                width: 38px;
+                height: 38px;
+                font-size: 1.4em;
+                right: 10px;
+                bottom: 10px;
+            }
+        }
+        #igBtn {
+            position: fixed;
+            right: 18px;
+            bottom: 80px;
+            z-index: 9999;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px #aaa;
+            padding: 4px;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        #igBtn:hover { opacity: 1; }
+        @media (max-width:600px) {
+            #igBtn { right: 10px; bottom: 56px; width:32px; height:32px; }
+            #igBtn img { width:32px; height:32px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="category-title">{{ category }}商品列表</div>
+        <div class="products">
+            {% for idx, product in enumerate(products) %}
+                <div class="product-card">
+                    <a href="{{ url_for('product', product_id=idx) }}">
+                        <img src="{{ url_for('static', filename=product.images[0].replace('static/', '')) }}" alt="{{ product.name }}">
+                    </a>
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-price">${{ product.price }}</div>
+                    <div class="product-desc">{{ product.description }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- 回到最上方按鈕 -->
+    <button id="backToTop" title="回到最上面">↑</button>
+    <!-- Instagram 按鈕 -->
+    <a id="igBtn" href="https://www.instagram.com/moolight_studio?igsh=Y3Yzb3hsN2Rnczk2" target="_blank" title="Instagram">
+        <img src="https://cdn-icons-png.flaticon.com/512/87/87390.png" alt="IG" style="width:40px;height:40px;filter: grayscale(100%);">
+    </a>
+    <footer style="width:100%;text-align:center;margin:32px 0 0 0;font-size:1em;color:#888;line-height:1.7;">
+    2025 © moolight. ALL RIGHTS RESERVED.<br>
+    營業人名稱：牧盈工作室  /  統一編號：95247812
+    </footer>
+    <script>
+        // 顯示/隱藏按鈕
+        window.addEventListener('scroll', function() {
+            document.getElementById('backToTop').style.display = (window.scrollY > 200) ? 'block' : 'none';
+        });
+        // 點擊回到最上方
+        document.getElementById('backToTop').onclick = function() {
+            window.scrollTo({top:0, behavior:'smooth'});
+        };
+    </script>
+</body>
+</html>

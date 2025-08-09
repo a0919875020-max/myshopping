@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>管理員點數管理</title>
+    <style>
+        body { font-family: Arial; background: #f5f5f5; }
+        .container { max-width: 700px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #f1f1f1; }
+        input, select { padding: 6px; margin: 0 4px; }
+        button { padding: 6px 16px; background: #4CAF50; color: #fff; border: none; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>管理員點數管理</h2>
+        <form method="post">
+            <input type="text" name="user_search" placeholder="輸入會員帳號" required style="width:180px;">
+            <button type="submit" name="action" value="search">搜尋</button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div style="color:red; font-weight:bold; margin:12px 0;">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        {% if selected_user %}
+        <div style="background:#f9f9f9; padding:12px; border-radius:6px; margin-bottom:16px;">
+            <strong>查詢結果：</strong><br>
+            帳號：{{ selected_user.username }}<br>
+            目前點數：{{ selected_user.points }}
+        </div>
+        <form method="post" style="margin-top:8px;">
+            <input type="hidden" name="user_id" value="{{ selected_user.id }}">
+            <input type="number" name="change" placeholder="點數變動" required>
+            <input type="text" name="reason" placeholder="原因" required>
+            <button type="submit" name="action" value="update">更新點數</button>
+        </form>
+        {% endif %}
+        <hr>
+        <h3>查詢會員點數</h3>
+        <form method="get" style="margin-bottom:16px;">
+            <input type="text" name="search_username" placeholder="輸入會員帳號" required>
+            <button type="submit">查詢</button>
+        </form>
+        {% if search_user %}
+        <div style="background:#f9f9f9; padding:12px; border-radius:6px; margin-bottom:16px;">
+            <strong>查詢結果：</strong><br>
+            帳號：{{ search_user.username }}<br>
+            目前點數：{{ search_user.points }}<br>
+            <strong style="display:block; margin-top:8px;">點數紀錄：</strong>
+            <table style="margin-top:8px;">
+                <tr><th>時間</th><th>變動</th><th>原因</th></tr>
+                {% for log in search_logs %}
+                <tr>
+                    <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ log.change }}</td>
+                    <td>{{ log.reason }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% elif search_username %}
+        <div style="color:red;">查無此會員</div>
+        {% endif %}
+        <table>
+            <tr><th>帳號</th><th>目前點數</th></tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.points }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="{{ url_for('admin') }}">回管理頁</a>
+    </div>
+    <footer style="width:100%;text-align:center;margin:32px 0 0 0;font-size:1em;color:#888;line-height:1.7;">
+    2025 © moolight. ALL RIGHTS RESERVED.<br>
+    營業人名稱：牧盈工作室  /  統一編號：95247812
+    </footer>
+</body>
+</html>
